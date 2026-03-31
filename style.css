@@ -183,4 +183,52 @@
                 width: 100%;
             }
         }
+
+/* Alapértelmezett: asztali gépen maradjon oldalt (opcionális) */
+.reference-footer {
+    display: none; /* Alapból rejtve */
+}
+
+/* MOBILNÉZETBEN (768px alatt) jelenjen meg alul */
+@media (max-width: 768px) {
+    .reference-footer {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-top: 2px solid #ddd;
+        z-index: 1000;
+        justify-content: space-around;
+        align-items: center;
+        padding-bottom: env(safe-area-inset-bottom); /* iPhone "notch" védelem */
+    }
+
+    .ref-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .ref-item img {
+        height: 45px; /* Kisebb méret, hogy ne foglaljon sok helyet */
+        width: auto;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+    }
+
+    .ref-item span {
+        font-size: 10px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    /* Hogy az utolsó sor érme ne lógjon a lábléc alá: */
+    body {
+        padding-bottom: 100px; 
+    }
+}
     </style>

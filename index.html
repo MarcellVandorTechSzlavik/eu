@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Érme Gyűjtemény - Főoldal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Érmegyűjteményeim</h1>
+
+    <div class="collection-grid">
+        <a href="ge-a.html" class="card german-card">
+            <h2 style="margin:0">🇩🇪 Németország (A)</h2>
+        </a>
+
+        <a href="ge-d.html" class="card german-card">
+            <h2 style="margin:0">🇩🇪 Németország (D)</h2>
+        </a>
+
+        <a href="ge-f.html" class="card german-card">
+            <h2 style="margin:0">🇩🇪 Németország (F)</h2>
+        </a>
+
+        <a href="ge-g.html" class="card german-card">
+            <h2 style="margin:0">🇩🇪 Németország (G)</h2>
+        </a>
+
+        <a href="ge-j.html" class="card german-card">
+            <h2 style="margin:0">🇩🇪 Németország (J)</h2>
+        </a>
+
+        <a href="at.html" class="card austrian-card">
+            <h2 style="margin:0">🇦🇹 Ausztria</h2>
+        </a>
+
+        <a href="be.html" class="card belgian-card">
+            <h2 style="margin:0">🇧🇪 Belgium</h2>
+        </a>
+
+        <a href="it.html" class="card italian-card">
+            <h2 style="margin:0">🇮🇹 Olaszország</h2>
+        </a>
+
+        <a href="fr.html" class="card french-card">
+            <h2 style="margin:0">🇫🇷 Franciaország</h2>
+        </a>
+    </div>
+
+    <div class="backup-section">
+        <h3 style="margin-top:0">⚙️ Adatmentés & Biztonság</h3>
+        <div class="btn-group">
+            <button onclick="exportData()">💾 Mentés (.json)</button>
+            <button onclick="document.getElementById('importFile').click()">📂 Visszaállítás</button>
+        </div>
+        <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+    </div>
+</div>
+
+<script>
+    // A statisztikai számításokat eltávolítottuk, mivel az aloldalak kezelik őket.
+    
+    function exportData() {
+        const data = {};
+        for(let i=0; i<localStorage.length; i++) {
+            const key = localStorage.key(i);
+            data[key] = localStorage.getItem(key);
+        }
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'erme_gyujtemeny_mentes.json';
+        a.click();
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                Object.keys(importedData).forEach(key => localStorage.setItem(key, importedData[key]));
+                alert('Sikeres visszaállítás!');
+                window.location.reload();
+            } catch(err) {
+                alert('Hiba a fájl beolvasásakor!');
+            }
+        };
+        reader.readAsText(file);
+    }
+</script>
+</body>
+</html>

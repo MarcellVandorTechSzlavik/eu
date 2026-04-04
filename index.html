@@ -3,7 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <title>Érme Gyűjtemény - Főoldal</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 1. Alapbeállítások és a FŐ HÁTTÉRKÉP */
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image: url('hatter.jpg'); 
+            background-size: cover;
+            background-position: center;
+            opacity: 0.5;
+        }
+
+        /* 2. Központi tartalom doboz */
+        .container { 
+            max-width: 800px; 
+            width: 90%;
+            margin: 40px auto; 
+            background: rgba(255, 255, 255, 0.85); 
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        h1 { text-align: center; margin-bottom: 30px; color: #111; letter-spacing: 1px; }
+
+        .collection-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 25px; 
+        }
+
+/* Minden kártya alapja */
+.card {
+    position: relative;
+    overflow: hidden;
+    background-color: #222;
+    
+    /* ORVOSLAT 1: Magasság és szélesség növelése */
+    min-height: 180px;  /* Elég magas lesz a zászlóhoz */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* A szöveg a kártya aljára kerül, így jobban látszik a zászló */
+    
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #444;
+    text-decoration: none;
+    color: white;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    
+    /* ORVOSLAT 2: Intelligens kitöltés */
+    background-size: cover;    /* Kitölti a dobozt torzítás nélkül */
+    background-position: center; /* A zászló közepe marad meg */
+    background-repeat: no-repeat;
+    
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+/* Ha ráviszed az egeret, kivilágosodik a zászló */
+.card:hover::before {
+    opacity: 0.8;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+/* --- ORSZÁGOK ÉS A KÉPEIK --- */
+
+.german-card::before { 
+    background-image: url('ge.jpg'); /* ITT A KÉP HELYE */
+}
+.german-card { border-left: 10px solid #000; }
+
+.austrian-card::before { 
+    background-image: url('at.jpg'); /* ITT A KÉP HELYE */
+}
+.austrian-card { border-left: 10px solid #ed2939; }
+
+.belgian-card::before { 
+    background-image: url('be.jpg'); 
+}
+.belgian-card { border-left: 10px solid #ffd100; }
+/* --- ÚJ ORSZÁGOK STÍLUSAI --- */
+
+.croatian-card::before { 
+    background-image: url('cr.jpg'); /* Horvát zászló képe */
+}
+.croatian-card { border-left: 10px solid #ff0000; }
+
+.slovak-card::before { 
+    background-image: url('sk.jpg'); /* Szlovák zászló képe */
+}
+.slovak-card { border-left: 10px solid #0b47a1; }
+
+.italian-card::before { 
+    background-image: url('it.jpg'); /* Olasz zászló képe */
+}
+.italian-card { border-left: 10px solid #008c45; }
+
+.french-card::before { 
+    background-image: url('fr.jpg'); /* Francia zászló képe */
+}
+.french-card { border-left: 10px solid #002395; }
+
+
+        /* 6. Adatkezelés */
+        .backup-section { margin-top: 50px; padding: 20px; background: rgba(255,255,255,0.4); border-radius: 15px; border: 2px dashed #bbb; text-align: center; }
+        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 15px; }
+        button { padding: 12px 20px; cursor: pointer; border-radius: 8px; border: 1px solid #333; background: white; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #333; color: white; transform: scale(1.05); }
+    </style>
 </head>
 <body>
 
@@ -46,6 +182,14 @@
         <a href="fr.html" class="card french-card">
             <h2 style="margin:0">🇫🇷 Franciaország</h2>
         </a>
+        <a href="cr.html" class="card croatian-card">
+            <h2 style="margin:0">🇭🇷 Horvátország</h2>
+        </a>
+
+        <a href="sk.html" class="card slovak-card">
+            <h2 style="margin:0">🇸🇰 Szlovákia</h2>
+        </a>
+
     </div>
 
     <div class="backup-section">

@@ -51,6 +51,50 @@
 
         input[type="checkbox"] { transform: scale(1.2); margin-right: 5px; cursor: pointer; }
         label { cursor: pointer; font-size: 0.9em; }
+
+/* Érme képek konténer */
+.coin-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.coin-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    flex: 1 1 150px; /* Mobilra optimalizált szélesség */
+}
+
+.coin-group img {
+    width: 60px; /* Átmérőhöz igazítható */
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.coin-group span {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Mobilnézethez igazítás, ha nagyon kicsi a kijelző */
+@media (max-width: 480px) {
+    .coin-group {
+        flex: 1 1 40%;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -70,6 +114,28 @@
             <div id="stat-bar" style="width: 0%; height: 100%; background: #dd0000; transition: 0.5s;"></div>
         </div>
     </div>
+
+<div class="coin-gallery">
+    <div class="coin-group">
+        <img src="img/de_125cent.png" alt="1-2-5 cent">
+        <span>1c, 2c, 5c</span>
+    </div>
+    
+    <div class="coin-group">
+        <img src="img/de_102050cent.png" alt="10-20-50 cent">
+        <span>10c, 20c, 50c</span>
+    </div>
+    
+    <div class="coin-group">
+        <img src="img/de_1euro.png" alt="1 Euro">
+        <span>1 €</span>
+    </div>
+    
+    <div class="coin-group">
+        <img src="img/de_2euro.png" alt="2 Euro">
+        <span>2 €</span>
+    </div>
+</div>
 
     <div id="main-table" class="table">
         <div class="header-row">
@@ -164,25 +230,5 @@ const coins = ['1c', '2c', '5c', '10c', '20c', '50c', '€1', '€2'];
         updateLocalStats();
     };
 </script>
-
-<div class="reference-footer">
-    <div class="ref-item">
-        <img src="img/ge-small.jpg" alt="1-5c">
-        <span>1c-5c</span>
-    </div>
-    <div class="ref-item">
-        <img src="img/ge-mid.jpg" alt="10-50c">
-        <span>10c-50c</span>
-    </div>
-    <div class="ref-item">
-        <img src="img/ge-1e.jpg" alt="1e">
-        <span>1 €</span>
-    </div>
-    <div class="ref-item">
-        <img src="img/ge-2e.jpg" alt="2e">
-        <span>2 €</span>
-    </div>
-</div>
-
 </body>
 </html>

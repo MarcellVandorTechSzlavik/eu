@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Szlovák Euro érmék</title>
+    <style>
+        body { margin: 0; padding: 20px; font-family: 'Segoe UI', Arial, sans-serif; position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-image: url('hatter.jpg'); background-size: cover; background-position: center; opacity: 0.5; }
+        .content-wrapper { background: rgba(255, 255, 255, 0.9); padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; max-width: 850px; box-sizing: border-box; }
+        .nav-header { margin-bottom: 20px; }
+        .back-btn { text-decoration: none; color: #444; font-weight: bold; padding: 5px 10px; border: 1px solid #ccc; border-radius: 5px; background: #fff; }
+        .back-btn:hover { background: #333; color: #fff; }
+        h2 { margin: 10px 0 20px 0; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        
+        /* Táblázat beállítások */
+        .table { display: table; border-collapse: collapse; width: 100%; table-layout: fixed; }
+        .header-row { display: table-row; background: #eee; font-weight: bold; }
+        .row { display: table-row; }
+        .row:hover { background-color: rgba(0,0,0,0.03); }
+        .cell { display: table-cell; padding: 10px 2px; border-bottom: 1px solid #ddd; vertical-align: middle; text-align: center; font-size: 0.85em; }
+        .year { font-weight: bold; width: 55px; text-align: left; padding-left: 5px; }
+        
+        .no-coin { color: #bbb; font-size: 0.8em; }
+        input[type="checkbox"] { 
+            transform: scale(1.1); 
+            cursor: pointer; 
+            vertical-align: middle; /* Középre igazítja a szöveggel */
+        }
+        
+        label { 
+            cursor: pointer; 
+            display: inline-block; /* Ez a kulcs: egymás mellé kerülnek */
+            font-size: 0.8em; 
+            margin-left: 4px; /* Kis hely a pipa és a szöveg között */
+            vertical-align: middle; 
+        }
+
+        .coin-gallery { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 10px; }
+        .coin-group { display: flex; flex-direction: column; align-items: center; background: #f9f9f9; padding: 6px; border-radius: 8px; border: 1px solid #eee; flex: 1 1 90px; }
+        .coin-group img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 5px; cursor: pointer; transition: transform 0.2s; }
+        .coin-group img:hover { transform: scale(1.1); }
+        .coin-group span { font-size: 0.7em; font-weight: bold; color: #555; text-align: center; }
+
+        /* Modal stílus */
+        .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; cursor: zoom-out; }
+        .modal-content { max-width: 90%; max-height: 90%; border: 5px solid white; border-radius: 15px; background: white; }
+
+        @media (max-width: 600px) {
+            .cell { font-size: 0.75em; padding: 5px 1px; }
+            .year { width: 45px; }
+            label { font-size: 0.7em; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="imageModal" class="modal" onclick="this.style.display='none'">
+    <img class="modal-content" id="imgFull">
+</div>
+
+<div class="content-wrapper">
+    <div class="nav-header">
+        <a href="index.html" class="back-btn">← Vissza a főoldalra</a>
+    </div>
+
+    <h2>🇸🇰 Szlovákia</h2>
+
+    <div style="margin-bottom: 20px; background: #f0f0f0; padding: 15px; border-radius: 10px;">
+        <div style="font-weight: bold; margin-bottom: 5px;">
+            Gyűjtemény állapota: <span id="stat-count">0 / 0</span>
+        </div>
+        <div style="background: rgba(0,0,0,0.1); height: 10px; border-radius: 5px; overflow: hidden;">
+            <div id="stat-bar" style="width: 0%; height: 100%; background: #0b47a1; transition: 0.5s;"></div>
+        </div>
+    </div>
+
+    <div class="coin-gallery">
+        <div class="coin-group"><img src="sk/sk-1.jpg" alt="125c" onclick="openModal(this.src)"><span>1c, 2c, 5c<br><small>Kriván-csúcs</small></span></div>
+        <div class="coin-group"><img src="sk/sk-10.jpg" alt="102050c" onclick="openModal(this.src)"><span>10c, 20c, 50c<br><small>Pozsonyi vár</small></span></div>
+        <div class="coin-group"><img src="sk/sk-100.jpg" alt="1€" onclick="openModal(this.src)"><span>1€<br><small>Kettős kereszt</small></span></div>
+        <div class="coin-group"><img src="sk/sk-200.jpg" alt="2€" onclick="openModal(this.src)"><span>2€<br><small>Kettős kereszt</small></span></div>
+    </div>
+
+    <div id="main-table" class="table">
+        <div class="header-row">
+            <div class="cell year">Év</div>
+            <div class="cell">1c</div><div class="cell">2c</div><div class="cell">5c</div>
+            <div class="cell">10c</div><div class="cell">20c</div><div class="cell">50c</div>
+            <div class="cell">€1</div><div class="cell">€2</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const data = {
+        2026: [false, false, false, false, false, false, false, true],
+        2025: [false, false, true, true, false, false, true, true],
+        2024: [false, false, true, true, false, false, true, true],
+        2023: [false, false, true, true, false, false, false, false],
+        2022: [false, false, true, true, false, false, false, true],
+        2021: [true, true, true, true, false, false, true, false],
+        2020: [true, true, true, true, false, false, false, true],
+        2019: [true, true, true, true, false, false, false, true],
+        2018: [true, true, true, false, false, false, false, false],
+        2017: [true, true, true, false, false, false, false, true],
+        2016: [true, true, false, false, false, false, false, true],
+        2015: [true, true, false, false, false, false, false, true],
+        2014: [true, true, false, false, false, false, false, false],
+        2013: [true, false, false, false, false, false, false, false],
+        2012: [true, false, false, false, false, false, false, false],
+        2011: [true, true, false, false, false, false, false, true],
+        2010: [true, true, false, false, false, false, false, false],
+        2009: [true, true, true, true, true, true, true, true]
+    };
+
+    const coins = ['1c', '2c', '5c', '10c', '20c', '50c', '€1', '€2'];
+    const table = document.getElementById('main-table');
+
+    function openModal(src) {
+        document.getElementById('imageModal').style.display = 'flex';
+        document.getElementById('imgFull').src = src;
+    }
+
+    function updateLocalStats() {
+        const totalPossible = Object.values(data).flat().filter(Boolean).length;
+        let currentChecked = 0;
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            if (cb.id.startsWith('c-sk-') && cb.checked) currentChecked++;
+        });
+        const percent = totalPossible > 0 ? Math.round((currentChecked / totalPossible) * 100) : 0;
+        document.getElementById('stat-count').innerText = `${currentChecked} / ${totalPossible} érme (${percent}%)`;
+        document.getElementById('stat-bar').style.width = percent + '%';
+    }
+
+    Object.keys(data).sort((a, b) => b - a).forEach(year => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        let html = `<div class="cell year">${year}</div>`;
+        
+        data[year].forEach((ok, i) => {
+            const id = `c-sk-${year}-${i}`;
+            html += `<div class="cell">`;
+            if (ok) {
+                html += `<input type="checkbox" id="${id}" onchange="localStorage.setItem('${id}', this.checked); updateLocalStats()"> <label for="${id}">${coins[i]}</label>`;
+            } else {
+                html += `<span class="no-coin">-</span>`;
+            }
+            html += `</div>`;
+        });
+        
+        row.innerHTML = html;
+        table.appendChild(row);
+    });
+
+    window.onload = () => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.checked = localStorage.getItem(cb.id) === 'true';
+        });
+        updateLocalStats();
+    };
+</script>
+</body>
+</html>

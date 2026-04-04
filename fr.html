@@ -66,21 +66,26 @@
 
     <h2>🇫🇷 Franciaország</h2>
 
-    <div style="margin-bottom: 20px; background: #f0f0f0; padding: 15px; border-radius: 10px;">
+     <div style="margin-bottom: 20px; background: #f0f0f0; padding: 15px; border-radius: 10px;">
         <div style="font-weight: bold; margin-bottom: 5px;">
             Gyűjtemény állapota: <span id="stat-count">0 / 0</span>
         </div>
         <div style="background: rgba(0,0,0,0.1); height: 10px; border-radius: 5px; overflow: hidden;">
-            <div id="stat-bar" style="width: 0%; height: 100%; background: #002395; transition: 0.5s;"></div>
+            <div id="stat-bar" style="width: 0%; height: 100%; background: #0b47a1; transition: 0.5s;"></div>
         </div>
     </div>
 
-    <div class="coin-gallery">
-        <div class="coin-group"><img src="img/fr_125c.png" alt="1-2-5c"><span>1c, 2c, 5c<br><small>Marianne</small></span></div>
-        <div class="coin-group"><img src="img/fr_102050c_old.png" alt="10c-old"><span>10-50c (A)<br><small>Vető asszony</small></span></div>
-        <div class="coin-group new-design"><img src="img/fr_102050c_new.png" alt="10c-new"><span>10-50c (B)<br><small>Új (2024-)</small></span></div>
-        <div class="coin-group"><img src="img/fr_12e_old.png" alt="1e-old"><span>1€, 2€ (A)<br><small>Élet fája</small></span></div>
-        <div class="coin-group new-design"><img src="img/fr_12e_new.png" alt="1e-new"><span>1€, 2€ (B)<br><small>Új (2022-)</small></span></div>
+<div class="coin-gallery">
+        <div class="coin-group"><img src="fr/fr-1.jpg" alt="125c" onclick="openModal(this.src)"><span>1c, 2c, 5c<br><small>Marianne</small></span></div>
+        <div class="coin-group"><img src="fr/fr-10.jpg" alt="102050c" onclick="openModal(this.src)"><span>10c, 20c, 50c<br><small>Vető asszony</small></span></div>
+	<div class="coin-group"><img src="fr/fr-10-b.jpg" alt="10c" onclick="openModal(this.src)"><span>10c<br><small>Vető asszony</small></span></div>
+	<div class="coin-group"><img src="fr/fr-20-b.jpg" alt="20c" onclick="openModal(this.src)"><span>20c<br><small>Vető asszony</small></span></div>
+	<div class="coin-group"><img src="fr/fr-50-b.jpg" alt="50c" onclick="openModal(this.src)"><span>50c<br><small>Vető asszony</small></span></div>
+        <div class="coin-group"><img src="fr/fr-100-a.jpg" alt="1€" onclick="openModal(this.src)"><span>1€<br><small>Élet fája</small></span></div>
+	<div class="coin-group"><img src="fr/fr-100-b.jpg" alt="1€" onclick="openModal(this.src)"><span>1€<br><small>Élet fája</small></span></div>
+        <div class="coin-group"><img src="fr/fr-200-a.jpg" alt="2€" onclick="openModal(this.src)"><span>2€<br><small>Élet fája</small></span></div>
+	<div class="coin-group"><img src="fr/fr-200-b.jpg" alt="2€" onclick="openModal(this.src)"><span>2€<br><small>Élet fája</small></span></div>
+
     </div>
 
     <div id="main-table" class="table">
@@ -98,35 +103,43 @@
     // Megjegyzés: 2022-től az 1 és 2 Euro új dizájnt (B) kapott.
     // 2024-től a 10, 20, 50 cent is új dizájnt (B) kapott.
     const data = {
-        2026: [true, true, true, true, true, true, true, true],
-        2025: [true, true, true, true, true, true, true, true],
-        2024: [true, true, true, true, true, true, true, true], // 10-50c már B verzió!
-        2023: [true, true, true, true, true, true, true, true],
-        2022: [true, true, true, true, true, true, true, true], // 1€-2€ már B verzió!
-        2021: [true, true, true, true, true, true, true, true],
-        2020: [true, true, true, true, true, true, true, true],
-        2019: [true, true, true, true, true, true, true, true],
-        2018: [true, true, true, true, true, true, true, true],
-        2017: [true, true, true, true, true, true, true, true],
-        2016: [true, true, true, true, true, true, true, true],
-        2015: [true, true, true, true, true, true, true, true],
-        2014: [true, true, true, true, true, true, true, true],
-        2013: [true, true, true, true, true, true, true, true],
-        2012: [true, true, true, true, true, true, true, true],
-        2011: [true, true, true, true, true, true, true, true],
-        2010: [true, true, true, true, true, true, true, true],
-        2009: [true, true, true, true, true, true, true, true],
-        2008: [true, true, true, true, true, true, true, true],
-        2007: [true, true, true, true, true, true, true, true],
-        2006: [true, true, true, true, true, true, true, true],
-        2005: [true, true, true, true, true, true, true, true],
-        2004: [true, true, true, true, true, true, true, true],
-        2003: [true, true, true, true, true, true, true, true],
-        2002: [true, true, true, true, true, true, true, true]
+        2026: [false, false, false, false, false, false, false, false],
+        2025: [false, true, false, false, false, false, false, false],
+        2024: [true, true, true, true, true, true, false, true], // 10-50c már B verzió!
+        2023: [true, true, true, true, true, true, false, true],
+        2022: [true, true, true, true, true, true, false, true], // 1€-2€ már B verzió!
+        2021: [true, true, true, true, true, true, false, true],
+        2020: [true, true, true, true, true, true, false, true],
+        2019: [true, true, true, true, true, true, false, true],
+        2018: [true, true, true, true, true, true, false, true],
+        2017: [true, true, true, true, true, false, false, true],
+        2016: [true, true, true, true, false, false, false, true],
+        2015: [true, true, true, true, true, false, false, true],
+        2014: [true, true, true, true, true, false, false, true],
+        2013: [true, true, true, true, true, false, false, true],
+        2012: [true, true, true, true, false, false, false, true],
+        2011: [true, true, true, true, true, false, false, true],
+        2010: [true, true, true, true, true, false, false, false],
+        2009: [true, true, true, true, true, false, false, false],
+        2008: [true, true, true, true, true, false, false, false],
+        2007: [true, true, true, true, true, false, false, false],
+        2006: [true, true, true, true, false, false, false, false],
+        2005: [true, true, true, true, false, false, false, false],
+        2004: [true, true, true, true, false, false, false, false],
+        2003: [true, true, true, true, false, false, false, false],
+        2002: [true, false, true, true, true, true, true, true]
+	2001: [true, true, true, true, true, true, true, true],
+        2000: [true, true, true, true, true, true, true, true],
+        1999: [true, true, true, true, true, true, true, true]
     };
 
     const coins = ['1c', '2c', '5c', '10c', '20c', '50c', '€1', '€2'];
     const table = document.getElementById('main-table');
+
+    function openModal(src) {
+        document.getElementById('imageModal').style.display = 'flex';
+        document.getElementById('imgFull').src = src;
+    }
 
     function updateLocalStats() {
         const totalPossible = Object.values(data).flat().filter(Boolean).length;
@@ -146,18 +159,9 @@
         
         data[year].forEach((ok, i) => {
             const id = `c-fr-${year}-${i}`;
-            let labelSuffix = "";
-            
-            // Logika a verziók jelölésére a táblázatban
-            if (i >= 3 && i <= 5) { // 10, 20, 50 cent
-                labelSuffix = year >= 2024 ? " (B)" : " (A)";
-            } else if (i >= 6) { // 1, 2 Euro
-                labelSuffix = year >= 2022 ? " (B)" : " (A)";
-            }
-
             html += `<div class="cell">`;
             if (ok) {
-                html += `<input type="checkbox" id="${id}" onchange="localStorage.setItem('${id}', this.checked); updateLocalStats()"> <label for="${id}">${coins[i]}${labelSuffix}</label>`;
+                html += `<input type="checkbox" id="${id}" onchange="localStorage.setItem('${id}', this.checked); updateLocalStats()"> <label for="${id}">${coins[i]}</label>`;
             } else {
                 html += `<span class="no-coin">-</span>`;
             }

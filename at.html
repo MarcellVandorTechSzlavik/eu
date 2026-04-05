@@ -4,37 +4,65 @@
     <meta charset="UTF-8">
     <title>🇦🇹 Ausztria</title>
     <style>
-        /* A stílus marad a régi, de kiegészítettem a galériát, hogy több érme férjen el */
         body { margin: 0; padding: 20px; font-family: 'Segoe UI', Arial, sans-serif; position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
         body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background-image: url('hatter.jpg'); background-size: cover; background-position: center; opacity: 0.5; }
-        .content-wrapper { background: rgba(255, 255, 255, 0.9); padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; max-width: 850px; }
+        .content-wrapper { background: rgba(255, 255, 255, 0.9); padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; max-width: 850px; box-sizing: border-box; }
         .nav-header { margin-bottom: 20px; }
         .back-btn { text-decoration: none; color: #444; font-weight: bold; padding: 5px 10px; border: 1px solid #ccc; border-radius: 5px; background: #fff; }
         .back-btn:hover { background: #333; color: #fff; }
         h2 { margin: 10px 0 20px 0; border-bottom: 2px solid #333; padding-bottom: 10px; }
-        .table { display: table; border-collapse: collapse; width: 100%; }
+        
+        /* Táblázat beállítások */
+        .table { display: table; border-collapse: collapse; width: 100%; table-layout: fixed; }
         .header-row { display: table-row; background: #eee; font-weight: bold; }
         .row { display: table-row; }
         .row:hover { background-color: rgba(0,0,0,0.03); }
-        .cell { display: table-cell; padding: 10px 5px; border-bottom: 1px solid #ddd; vertical-align: middle; text-align: center; }
-        .year { font-weight: bold; width: 60px; text-align: left; padding-left: 10px; }
+        .cell { display: table-cell; padding: 10px 2px; border-bottom: 1px solid #ddd; vertical-align: middle; text-align: center; font-size: 0.85em; }
+        .year { font-weight: bold; width: 55px; text-align: left; padding-left: 5px; }
+        
         .no-coin { color: #bbb; font-size: 0.8em; }
-        input[type="checkbox"] { transform: scale(1.2); margin-right: 5px; cursor: pointer; }
-        label { cursor: pointer; font-size: 0.9em; }
+        input[type="checkbox"] { 
+            transform: scale(1.1); 
+            cursor: pointer; 
+            vertical-align: middle; /* Középre igazítja a szöveggel */
+        }
+        
+        label { 
+            cursor: pointer; 
+            display: inline-block; /* Ez a kulcs: egymás mellé kerülnek */
+            font-size: 0.8em; 
+            margin-left: 4px; /* Kis hely a pipa és a szöveg között */
+            vertical-align: middle; 
+        }
 
-        .coin-gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 10px; }
-        .coin-group { display: flex; flex-direction: column; align-items: center; background: #f9f9f9; padding: 8px; border-radius: 8px; border: 1px solid #eee; flex: 1 1 100px; }
-        .coin-group img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 5px; }
-        .coin-group span { font-size: 0.75em; font-weight: bold; color: #555; }
-        @media (max-width: 480px) { .coin-group { flex: 1 1 22%; } }
+        .coin-gallery { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 10px; }
+        .coin-group { display: flex; flex-direction: column; align-items: center; background: #f9f9f9; padding: 6px; border-radius: 8px; border: 1px solid #eee; flex: 1 1 90px; }
+        .coin-group img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 5px; cursor: pointer; transition: transform 0.2s; }
+        .coin-group img:hover { transform: scale(1.1); }
+        .coin-group span { font-size: 0.7em; font-weight: bold; color: #555; text-align: center; }
+
+        /* Modal stílus */
+        .modal { display: none; position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; cursor: zoom-out; }
+        .modal-content { max-width: 90%; max-height: 90%; border: 5px solid white; border-radius: 15px; background: white; }
+
+        @media (max-width: 600px) {
+            .cell { font-size: 0.75em; padding: 5px 1px; }
+            .year { width: 45px; }
+            label { font-size: 0.7em; }
+        }
     </style>
 </head>
 <body>
+
+<div id="imageModal" class="modal" onclick="this.style.display='none'">
+    <img class="modal-content" id="imgFull">
+</div>
 
 <div class="content-wrapper">
     <div class="nav-header">
         <a href="index.html" class="back-btn">← Vissza a főoldalra</a>
     </div>
+
 
     <h2>🇦🇹 Ausztria</h2> <div style="margin-bottom: 20px; background: #f0f0f0; padding: 15px; border-radius: 10px;">
         <div style="font-weight: bold; margin-bottom: 5px;">
@@ -45,15 +73,15 @@
         </div>
     </div>
 
-    <div class="coin-gallery">
-        <div class="coin-group"><img src="img/at_1c.png" alt="1c"><span>1c</span></div>
-        <div class="coin-group"><img src="img/at_2c.png" alt="2c"><span>2c</span></div>
-        <div class="coin-group"><img src="img/at_5c.png" alt="5c"><span>5c</span></div>
-        <div class="coin-group"><img src="img/at_10c.png" alt="10c"><span>10c</span></div>
-        <div class="coin-group"><img src="img/at_20c.png" alt="20c"><span>20c</span></div>
-        <div class="coin-group"><img src="img/at_50c.png" alt="50c"><span>50c</span></div>
-        <div class="coin-group"><img src="img/at_1e.png" alt="1e"><span>1€</span></div>
-        <div class="coin-group"><img src="img/at_2e.png" alt="2e"><span>2€</span></div>
+<div class="coin-gallery">
+        <div class="coin-group"><img src="cr/cr-1.jpg" alt="1c" onclick="openModal(this.src)"><span>1c<br><small>Tárnics</small></span></div>
+	<div class="coin-group"><img src="cr/cr-2.jpg" alt="2c" onclick="openModal(this.src)"><span>2c<br><small>Havasi gyopár</small></span></div>
+	<div class="coin-group"><img src="cr/cr-5.jpg" alt="5c" onclick="openModal(this.src)"><span>5c<br><small>Kankalin</small></span></div>
+	<div class="coin-group"><img src="cr/cr-10.jpg" alt="10c" onclick="openModal(this.src)"><span>10cc<br><small>Szent István-székesegyház</small></span></div>
+	<div class="coin-group"><img src="cr/cr-20.jpg" alt="20c" onclick="openModal(this.src)"><span>20c<br><small>Belvedere palota</small></span></div>
+        <div class="coin-group"><img src="cr/cr-50.jpg" alt="50c" onclick="openModal(this.src)"><span>50c<br><small>Szecessziós Háza</small></span></div>
+        <div class="coin-group"><img src="cr/cr-100.jpg" alt="1€" onclick="openModal(this.src)"><span>1€<br><small>Wolfgang Amadeus Mozart</small></span></div>
+        <div class="coin-group"><img src="cr/cr-200.jpg" alt="2€" onclick="openModal(this.src)"><span>2€<br><small>Bertha von Suttner</small></span></div>
     </div>
 
     <div id="main-table" class="table">
@@ -70,49 +98,46 @@
     // 3. ÁTÍRANDÓ: Adatstruktúra (Országspecifikus kiadások)
     // Megjegyzés: Ausztria minden évben kiadja az összes címletet forgalomba
     const data = {
-        2025: [true, true, true, true, true, true, true, true],
+        2026: [false, false, false, false, false, false, false, false],
+	2025: [true, true, true, true, true, true, true, true],
         2024: [true, true, true, true, true, true, true, true],
         2023: [true, true, true, true, true, true, true, true],
         2022: [true, true, true, true, true, true, true, true],
         2021: [true, true, true, true, true, true, true, true],
         2020: [true, true, true, true, true, true, true, true],
         2019: [true, true, true, true, true, true, true, true],
-        2018: [true, true, true, true, true, true, true, true],
+        2018: [true, true, true, true, true, true, true, false],
         2017: [true, true, true, true, true, true, true, true],
-        2016: [true, true, true, true, true, true, true, true],
-        2015: [true, true, true, true, true, true, true, true],
-        2014: [true, true, true, true, true, true, true, true],
-        2013: [true, true, true, true, true, true, true, true],
-        2012: [true, true, true, true, true, true, true, true],
+        2016: [false, false, false, true, true, true, true, false],
+        2015: [true, true, true, true, true, false, false, true],
+        2014: [true, true, true, true, true, false, false, true],
+        2013: [true, true, true, true, true, false, false, true],
+        2012: [true, true, true, true, true, false, false, true],
         2011: [true, true, true, true, true, true, true, true],
         2010: [true, true, true, true, true, true, true, true],
-        2009: [true, true, true, true, true, true, true, true],
+        2009: [true, true, true, true, true, true, true, false],
         2008: [true, true, true, true, true, true, true, true],
-        2007: [true, true, true, true, true, true, true, true],
+        2007: [true, true, true, true, true, true, true, false],
         2006: [true, true, true, true, true, true, true, true],
-        2005: [true, true, true, true, true, true, true, true],
+        2005: [true, true, true, true, true, true, true, false],
         2004: [true, true, true, true, true, true, true, true],
-        2003: [true, true, true, true, true, true, true, true],
+        2003: [true, true, true, false, true, true, false, true],
         2002: [true, true, true, true, true, true, true, true]
     };
 
-    const coins = ['1c', '2c', '5c', '10c', '20c', '50c', '€1', '€2'];
+   const coins = ['1c', '2c', '5c', '10c', '20c', '50c', '€1', '€2'];
     const table = document.getElementById('main-table');
 
-    function getPossibleTotal() {
-        let total = 0;
-        Object.values(data).forEach(yearArray => {
-            yearArray.forEach(exists => { if (exists) total++; });
-        });
-        return total;
+    function openModal(src) {
+        document.getElementById('imageModal').style.display = 'flex';
+        document.getElementById('imgFull').src = src;
     }
 
     function updateLocalStats() {
-        const totalPossible = getPossibleTotal();
+        const totalPossible = Object.values(data).flat().filter(Boolean).length;
         let currentChecked = 0;
-        // Fontos: Itt a "prefix" segít, hogy az osztrák pipák ne keveredjenek a némettel
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-            if (cb.checked) currentChecked++;
+            if (cb.id.startsWith('c-at-') && cb.checked) currentChecked++;
         });
         const percent = totalPossible > 0 ? Math.round((currentChecked / totalPossible) * 100) : 0;
         document.getElementById('stat-count').innerText = `${currentChecked} / ${totalPossible} érme (${percent}%)`;
@@ -125,8 +150,7 @@
         let html = `<div class="cell year">${year}</div>`;
         
         data[year].forEach((ok, i) => {
-            // 4. ÁTÍRANDÓ: Az ID-be tegyél országkódot (pl: c-at-), különben felülírják egymást!
-            const id = `c-at-${year}-${i}`; 
+            const id = `c-at-${year}-${i}`;
             html += `<div class="cell">`;
             if (ok) {
                 html += `<input type="checkbox" id="${id}" onchange="localStorage.setItem('${id}', this.checked); updateLocalStats()"> <label for="${id}">${coins[i]}</label>`;

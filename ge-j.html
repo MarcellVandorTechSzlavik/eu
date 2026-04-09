@@ -122,6 +122,8 @@
         2002: [true, true, true, true, true, true, true, true]
     };
 
+const mintMark = 'J'; // J
+
     const coins = ['1c', '2c', '5c', '10c', '20c', '50c', '€1', '€2'];
     const table = document.getElementById('main-table');
 
@@ -134,7 +136,7 @@
         const totalPossible = Object.values(data).flat().filter(Boolean).length;
         let currentChecked = 0;
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-            if (cb.id.startsWith('c-ge-') && cb.checked) currentChecked++;
+            if (cb.id.startsWith(`c-ge-${mintMark}-`) && cb.checked) currentChecked++;
         });
         const percent = totalPossible > 0 ? Math.round((currentChecked / totalPossible) * 100) : 0;
         document.getElementById('stat-count').innerText = `${currentChecked} / ${totalPossible} érme (${percent}%)`;
@@ -147,7 +149,7 @@
         let html = `<div class="cell year">${year}</div>`;
         
         data[year].forEach((ok, i) => {
-            const id = `c-ge-${year}-${i}`;
+            const id = `c-ge-${mintMark}-${year}-${i}`;
             html += `<div class="cell">`;
             if (ok) {
                 html += `<input type="checkbox" id="${id}" onchange="localStorage.setItem('${id}', this.checked); updateLocalStats()"> <label for="${id}">${coins[i]}</label>`;

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Érme Gyűjtemény - Főoldal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
         /* 1. Alapbeállítások és Háttér */
@@ -169,19 +170,18 @@
 <div id="right-friends" class="sidebar">
     <h2 style="color: #f1c40f;">Barátok</h2>
     <hr>
-    <div id="friends-list">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #555;">
-            <span>Kovács János</span>
-            <button onclick="viewFriend('user_1')" style="padding: 2px 8px; font-size: 0.7em;">👀</button>
-        </div>
+    
+    <div style="text-align: center; margin-bottom: 20px;">
+        <button onclick="startScanner()" style="width: 100%; margin-bottom: 10px;">📷 Kód beolvasása</button>
+        <div id="reader" style="width: 100%; border-radius: 10px; overflow: hidden;"></div>
     </div>
-    <p style="font-size: 0.7em; color: #ccc; margin-top: 20px;">A barátok gyűjteménye csak olvasható.</p>
+
+    <div id="friends-list"></div> <p style="font-size: 0.7em; color: #ccc; margin-top: 20px;">A barátok gyűjteménye csak olvasható.</p>
 </div>
 
 <div class="menu-trigger" id="right-trigger" onclick="toggleMenu('right-friends')">
     <span style="color:#f1c40f; font-weight:bold;">👥</span>
 </div>
-
 <div class="container">
     <h1>Érmegyűjteményeim</h1>
 
@@ -279,6 +279,92 @@
     function viewFriend(id) {
         alert("Barát gyűjteményének megtekintése: " + id);
     }
+
+let html5QrCode;
+
+function startScanner() {
+    // Létrehozzuk a scannert
+    html5QrCode = new Html5Qrcode("reader");
+    
+    const config = { fps: 10, qrbox: { width: 200, height: 200 } };
+
+    // Elindítjuk a hátsó kamerát
+    html5QrCode.start(
+        { facingMode: "environment" }, 
+        config,
+        (decodedText) => {
+            // SIKERES BEOLVASÁS:
+            addFriend(decodedText);
+            stopScanner(); // Megállítjuk a kamerát
+        },
+        (errorMessage) => {
+            // Itt nem kell semmit tenni, folyamatosan próbálkozik
+        }
+    ).catch((err) => {
+        alert("Hiba a kamera indításakor: " + err);
+    });
+}
+
+function stopScanner() {
+    if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+            document.getElementById("reader").innerHTML = "";
+        });
+    }
+}
+
+function addFriend(friendID) {
+    // Elmentjük a barátot a localStorage-ba
+    let friends = JSON.parse(localStorage.getItem('myCoinFriends') || "[]");
+    
+    if (!friends.includes(friendID)) {
+        friends.push(friendID);
+        localStorage.setItem('myCoinFriends', JSON.stringify(friends));
+        alert("Barát hozzáadva: " + friendID);
+        location.reload(); // Frissítjük a listát
+    } else {
+        alert("Ez a barát már szerepel a listán!");
+    }
+}
+
+window.onload = function() {
+    // ID kezelés (meglévő kódod...)
+    let myUserID = localStorage.getItem('myCoinUserID');
+    if (!myUserID) {
+        myUserID = 'COIN-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        localStorage.setItem('myCoinUserID', myUserID);
+    }
+    document.getElementById('user-id-text').innerText = myUserID;
+
+    // QR kód generálás (meglévő kódod...)
+    new QRCode(document.getElementById("qrcode"), {
+        text: myUserID,
+        width: 150,
+        height: 150
+    });
+
+    // EZT ADD HOZZÁ: Barátok listázása betöltéskor
+    renderFriends();
+};
+
+// ÚJ FÜGGVÉNY: Kirajzolja a mentett barátokat
+function renderFriends() {
+    const listDiv = document.getElementById('friends-list');
+    const friends = JSON.parse(localStorage.getItem('myCoinFriends') || "[]");
+    
+    listDiv.innerHTML = ""; // Alaphelyzetbe állítás
+
+    friends.forEach(friendID => {
+        const item = document.createElement('div');
+        item.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #555; margin-top:5px;";
+        item.innerHTML = `
+            <span style="font-family:monospace; font-size:0.9em;">${friendID}</span>
+            <button onclick="viewFriend('${friendID}')" style="padding: 2px 8px; font-size: 0.8em; background:#f1c40f; color:#222; border:none; border-radius:4px; cursor:pointer;">👀</button>
+        `;
+        listDiv.appendChild(item);
+    });
+}
+
 </script>
 
 </body>

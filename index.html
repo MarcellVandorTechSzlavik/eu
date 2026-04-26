@@ -3,367 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <title>Érme Gyűjtemény - Főoldal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
-        /* 1. Alapbeállítások és a FŐ HÁTTÉRKÉP */
+        /* 1. Alapbeállítások és Háttér */
         body { 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            color: #333; min-height: 100vh;
+            display: flex; justify-content: center; align-items: flex-start;
             position: relative;
         }
 
         body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background-image: url('hatter.jpg'); 
-            background-size: cover;
-            background-position: center;
-            opacity: 0.5;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-image: url('hatter.jpg'); 
+            background-size: cover; background-position: center; opacity: 0.5;
         }
 
         /* 2. Központi tartalom doboz */
         .container { 
-            max-width: 800px; 
-            width: 90%;
-            margin: 40px auto; 
-            background: rgba(255, 255, 255, 0.85); 
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            max-width: 800px; width: 90%; margin: 40px auto; 
+            background: rgba(255, 255, 255, 0.85); padding: 30px;
+            border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
         }
 
         h1 { text-align: center; margin-bottom: 30px; color: #111; letter-spacing: 1px; }
 
+        /* 3. Oldalsávok (Sidebar) */
+        .sidebar {
+            position: fixed; top: 0; width: 280px; height: 100%;
+            background: rgba(44, 62, 80, 0.98); color: white;
+            transition: 0.3s all ease; z-index: 2000; padding: 20px;
+            box-sizing: border-box; backdrop-filter: blur(10px);
+        }
+
+        #left-menu { left: -280px; border-right: 3px solid #f1c40f; }
+        #left-menu.active { left: 0; }
+
+        #right-friends { right: -280px; border-left: 3px solid #f1c40f; }
+        #right-friends.active { right: 0; }
+
+        /* 4. Indító Gombok (Triggers) */
+        .menu-trigger {
+            position: fixed; top: 20px; z-index: 2100; cursor: pointer;
+            background: #222; padding: 10px; border-radius: 8px;
+            border: 1px solid #f1c40f; transition: 0.3s all ease;
+        }
+
+        #left-trigger { left: 20px; }
+        #right-trigger { right: 20px; }
+
+        /* Dinamikus gombmozgás */
+        #left-menu.active ~ #left-trigger { left: 290px; }
+
+        .bar { display: block; width: 25px; height: 3px; background: #f1c40f; margin: 5px 0; }
+
+        /* 5. Kártyák és rács */
         .collection-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
             gap: 25px; 
         }
 
-/* Minden kártya alapja */
-.card {
-    position: relative;
-    overflow: hidden;
-    background-color: #222;
-    
-    /* ORVOSLAT 1: Magasság és szélesség növelése */
-    min-height: 180px;  /* Elég magas lesz a zászlóhoz */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end; /* A szöveg a kártya aljára kerül, így jobban látszik a zászló */
-    
-    padding: 20px;
-    border-radius: 15px;
-    border: 1px solid #444;
-    text-decoration: none;
-    color: white;
-    z-index: 1;
-    transition: all 0.3s ease;
-}
+        .card {
+            position: relative; overflow: hidden; background-color: #222;
+            min-height: 180px; display: flex; flex-direction: column;
+            justify-content: flex-end; padding: 20px; border-radius: 15px;
+            border: 1px solid #444; text-decoration: none; color: white;
+            z-index: 1; transition: all 0.3s ease;
+        }
 
-.card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -1;
-    
-    /* ORVOSLAT 2: Intelligens kitöltés */
-    background-size: cover;    /* Kitölti a dobozt torzítás nélkül */
-    background-position: center; /* A zászló közepe marad meg */
-    background-repeat: no-repeat;
-    
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
-}
+        .card::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-size: cover; background-position: center;
+            background-repeat: no-repeat; opacity: 0.6; transition: opacity 0.3s ease;
+        }
 
-/* Ha ráviszed az egeret, kivilágosodik a zászló */
-.card:hover::before {
-    opacity: 0.8;
-}
+        .card:hover::before { opacity: 0.8; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-}
-
-/* --- ORSZÁGOK ÉS A KÉPEIK --- */
-
-.german-card::before { 
-    background-image: url('ge.jpg'); /* ITT A KÉP HELYE */
-}
-.german-card { border-left: 10px solid #000; }
-
-.austrian-card::before { 
-    background-image: url('at.jpg'); /* ITT A KÉP HELYE */
-}
-.austrian-card { border-left: 10px solid #ed2939; }
-
-.belgian-card::before { 
-    background-image: url('be.jpg'); 
-}
-.belgian-card { border-left: 10px solid #ffd100; }
-
-.slovak-card::before { 
-    background-image: url('sk.jpg'); /* Szlovák zászló képe */
-}
-.slovak-card { border-left: 10px solid #0b47a1; }
-
-.italian-card::before { 
-    background-image: url('it.jpg'); /* Olasz zászló képe */
-}
-.italian-card { border-left: 10px solid #008c45; }
-
-.french-card::before { 
-    background-image: url('fr.jpg'); /* Francia zászló képe */
-}
-.french-card { border-left: 10px solid #002395; }
-
-.croatian-card::before { 
-    background-image: url('cr.jpg'); 
-}
-.croatian-card { border-left: 10px solid #ff0000; }
-
-.andorran-card::before { 
-    background-image: url('an.jpg'); 
-}
-.andorran-card { border-left: 10px solid #fed700; }
-
-.cypriot-card::before { 
-    background-image: url('cy.jpg'); 
-}
-.cypriot-card { border-left: 10px solid #d47008; }
-
-.estonian-card::before { 
-    background-image: url('ee.jpg'); 
-}
-.estonian-card { border-left: 10px solid #0072ce; }
-
-.finnish-card::before { 
-    background-image: url('fi.jpg'); 
-}
-.finnish-card { border-left: 10px solid #003580; }
-
-.greek-card::before { 
-    background-image: url('gr.jpg'); 
-}
-.greek-card { border-left: 10px solid #005bae; }
-
-.irish-card::before { 
-    background-image: url('ie.jpg'); 
-}
-.irish-card { border-left: 10px solid #169b62; }
-
-.latvian-card::before { 
-    background-image: url('lt.jpg'); 
-}
-.latvian-card { border-left: 10px solid #9e3039; }
-
-.lithuanian-card::before { 
-    background-image: url('ly.jpg'); 
-}
-.lithuanian-card { border-left: 10px solid #fdb913; }
-
-.luxembourg-card::before { 
-    background-image: url('lu.jpg'); 
-}
-.luxembourg-card { border-left: 10px solid #00a1de; }
-
-.maltese-card::before { 
-    background-image: url('ma.jpg'); 
-}
-.maltese-card { border-left: 10px solid #cf142b; }
-
-.monaco-card::before { 
-    background-image: url('mo.jpg'); 
-}
-.monaco-card { border-left: 10px solid #ce1126; }
-
-.dutch-card::before { 
-    background-image: url('nl.jpg'); 
-}
-.dutch-card { border-left: 10px solid #21468b; }
-
-.portuguese-card::before { 
-    background-image: url('pt.jpg'); 
-}
-.portuguese-card { border-left: 10px solid #046a38; }
-
-.sanmarino-card::before { 
-    background-image: url('sm.jpg'); 
-}
-.sanmarino-card { border-left: 10px solid #5ebce4; }
-
-.slovenian-card::before { 
-    background-image: url('sn.jpg'); 
-}
-.slovenian-card { border-left: 10px solid #005ca9; }
-
-.spanish-card::before { 
-    background-image: url('es.jpg'); 
-}
-.spanish-card { border-left: 10px solid #aa151b; }
-
-.vatican-card::before { 
-    background-image: url('vk.jpg'); 
-}
-.vatican-card { border-left: 10px solid #ffe000; }
-
-.bulgarian-card::before { 
-    background-image: url('bu.jpg'); 
-}
-.bulgarian-card { border-left: 10px solid #00966e; } /* A bolgár zászló zöldje */
+        /* Ország specifikus stílusok */
+        .german-card::before { background-image: url('ge.jpg'); }
+        .german-card { border-left: 10px solid #000; }
+        .austrian-card::before { background-image: url('at.jpg'); }
+        .austrian-card { border-left: 10px solid #ed2939; }
+        .belgian-card::before { background-image: url('be.jpg'); }
+        .belgian-card { border-left: 10px solid #ffd100; }
+        .slovak-card::before { background-image: url('sk.jpg'); }
+        .slovak-card { border-left: 10px solid #0b47a1; }
+        .italian-card::before { background-image: url('it.jpg'); }
+        .italian-card { border-left: 10px solid #008c45; }
+        .french-card::before { background-image: url('fr.jpg'); }
+        .french-card { border-left: 10px solid #002395; }
+        .croatian-card::before { background-image: url('cr.jpg'); }
+        .croatian-card { border-left: 10px solid #ff0000; }
+        .andorran-card::before { background-image: url('an.jpg'); }
+        .andorran-card { border-left: 10px solid #fed700; }
+        .cypriot-card::before { background-image: url('cy.jpg'); }
+        .cypriot-card { border-left: 10px solid #d47008; }
+        .estonian-card::before { background-image: url('ee.jpg'); }
+        .estonian-card { border-left: 10px solid #0072ce; }
+        .finnish-card::before { background-image: url('fi.jpg'); }
+        .finnish-card { border-left: 10px solid #003580; }
+        .greek-card::before { background-image: url('gr.jpg'); }
+        .greek-card { border-left: 10px solid #005bae; }
+        .irish-card::before { background-image: url('ie.jpg'); }
+        .irish-card { border-left: 10px solid #169b62; }
+        .latvian-card::before { background-image: url('lt.jpg'); }
+        .latvian-card { border-left: 10px solid #9e3039; }
+        .lithuanian-card::before { background-image: url('ly.jpg'); }
+        .lithuanian-card { border-left: 10px solid #fdb913; }
+        .luxembourg-card::before { background-image: url('lu.jpg'); }
+        .luxembourg-card { border-left: 10px solid #00a1de; }
+        .maltese-card::before { background-image: url('ma.jpg'); }
+        .maltese-card { border-left: 10px solid #cf142b; }
+        .monaco-card::before { background-image: url('mo.jpg'); }
+        .monaco-card { border-left: 10px solid #ce1126; }
+        .dutch-card::before { background-image: url('nl.jpg'); }
+        .dutch-card { border-left: 10px solid #21468b; }
+        .portuguese-card::before { background-image: url('pt.jpg'); }
+        .portuguese-card { border-left: 10px solid #046a38; }
+        .sanmarino-card::before { background-image: url('sm.jpg'); }
+        .sanmarino-card { border-left: 10px solid #5ebce4; }
+        .slovenian-card::before { background-image: url('sn.jpg'); }
+        .slovenian-card { border-left: 10px solid #005ca9; }
+        .spanish-card::before { background-image: url('es.jpg'); }
+        .spanish-card { border-left: 10px solid #aa151b; }
+        .vatican-card::before { background-image: url('vk.jpg'); }
+        .vatican-card { border-left: 10px solid #ffe000; }
+        .bulgarian-card::before { background-image: url('bu.jpg'); }
+        .bulgarian-card { border-left: 10px solid #00966e; }
 
         /* 6. Adatkezelés */
-        .backup-section { margin-top: 50px; padding: 20px; background: rgba(255,255,255,0.4); border-radius: 15px; border: 2px dashed #bbb; text-align: center; }
-        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 15px; }
+        .backup-section { margin-top: 50px; padding: 20px; background: rgba(0,0,0,0.05); border-radius: 15px; text-align: center; }
         button { padding: 12px 20px; cursor: pointer; border-radius: 8px; border: 1px solid #333; background: white; font-weight: bold; transition: 0.2s; }
-        button:hover { background: #333; color: white; transform: scale(1.05); }
+        button:hover { background: #333; color: white; }
+
+        #qrcode img { margin: 0 auto; border: 5px solid white; border-radius: 10px; }
     </style>
 </head>
 <body>
+
+<nav id="left-menu" class="sidebar">
+    <h2 style="color: #f1c40f;">Menü</h2>
+    <hr>
+    <div style="text-align: center; margin-top: 20px;">
+        <h3>🤝 Barátmeghívó</h3>
+        <p style="font-size: 0.8em;">Egyedi QR kódod:</p>
+        <div id="qrcode" style="background: white; padding: 10px; display: inline-block; border-radius: 10px;"></div>
+        <p id="user-id-text" style="font-weight:bold; margin-top:10px; color:#f1c40f;"></p>
+    </div>
+    <ul style="list-style: none; padding: 0; margin-top: 20px;">
+        <li onclick="exportData()" style="padding: 15px 0; border-bottom: 1px solid #555; cursor: pointer;">💾 Mentés (.json)</li>
+    </ul>
+</nav>
+
+<div class="menu-trigger" id="left-trigger" onclick="toggleMenu('left-menu')">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+</div>
+
+<div id="right-friends" class="sidebar">
+    <h2 style="color: #f1c40f;">Barátok</h2>
+    <hr>
+    <div id="friends-list">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #555;">
+            <span>Kovács János</span>
+            <button onclick="viewFriend('user_1')" style="padding: 2px 8px; font-size: 0.7em;">👀</button>
+        </div>
+    </div>
+    <p style="font-size: 0.7em; color: #ccc; margin-top: 20px;">A barátok gyűjteménye csak olvasható.</p>
+</div>
+
+<div class="menu-trigger" id="right-trigger" onclick="toggleMenu('right-friends')">
+    <span style="color:#f1c40f; font-weight:bold;">👥</span>
+</div>
 
 <div class="container">
     <h1>Érmegyűjteményeim</h1>
 
     <div class="collection-grid">
-        <a href="ge-a.html" class="card german-card">
-            <h2 style="margin:0">🇩🇪 Németország (A)</h2>
-        </a>
+        <a href="ge-a.html" class="card german-card"><h2>🇩🇪 Németország (A)</h2></a>
+        <a href="ge-d.html" class="card german-card"><h2>🇩🇪 Németország (D)</h2></a>
+        <a href="ge-f.html" class="card german-card"><h2>🇩🇪 Németország (F)</h2></a>
+        <a href="ge-g.html" class="card german-card"><h2>🇩🇪 Németország (G)</h2></a>
+        <a href="ge-j.html" class="card german-card"><h2>🇩🇪 Németország (J)</h2></a>
 
-        <a href="ge-d.html" class="card german-card">
-            <h2 style="margin:0">🇩🇪 Németország (D)</h2>
-        </a>
-
-        <a href="ge-f.html" class="card german-card">
-            <h2 style="margin:0">🇩🇪 Németország (F)</h2>
-        </a>
-
-        <a href="ge-g.html" class="card german-card">
-            <h2 style="margin:0">🇩🇪 Németország (G)</h2>
-        </a>
-
-        <a href="ge-j.html" class="card german-card">
-            <h2 style="margin:0">🇩🇪 Németország (J)</h2>
-        </a>
-
-        <a href="at.html" class="card austrian-card">
-            <h2 style="margin:0">🇦🇹 Ausztria</h2>
-        </a>
-
-        <a href="be.html" class="card belgian-card">
-            <h2 style="margin:0">🇧🇪 Belgium</h2>
-        </a>
-
-        <a href="it.html" class="card italian-card">
-            <h2 style="margin:0">🇮🇹 Olaszország</h2>
-        </a>
-
-        <a href="fr.html" class="card french-card">
-            <h2 style="margin:0">🇫🇷 Franciaország</h2>
-        </a>
-        <a href="cr.html" class="card croatian-card">
-            <h2 style="margin:0">🇭🇷 Horvátország</h2>
-        </a>
-
-        <a href="sk.html" class="card slovak-card">
-            <h2 style="margin:0">🇸🇰 Szlovákia</h2>
-        </a>
-
-	<a href="an.html" class="card andorran-card">
-            <h2 style="margin:0">🇦🇩 Andorra</h2>
-        </a>
-
-        <a href="cy.html" class="card cypriot-card">
-            <h2 style="margin:0">🇨🇾 Ciprus</h2>
-        </a>
-
-        <a href="ee.html" class="card estonian-card">
-            <h2 style="margin:0">EE Észtország</h2>
-        </a>
-
-        <a href="fi.html" class="card finnish-card">
-            <h2 style="margin:0">🇫🇮 Finnország</h2>
-        </a>
-
-        <a href="gr.html" class="card greek-card">
-            <h2 style="margin:0">🇬🇷 Görögország</h2>
-        </a>
-
-        <a href="ie.html" class="card irish-card">
-            <h2 style="margin:0">🇮🇪 Írország</h2>
-        </a>
-
-        <a href="lt.html" class="card latvian-card">
-            <h2 style="margin:0">🇱🇻 Lettország</h2>
-        </a>
-
-        <a href="ly.html" class="card lithuanian-card">
-            <h2 style="margin:0">🇱🇹 Litvánia</h2>
-        </a>
-
-        <a href="lu.html" class="card luxembourg-card">
-            <h2 style="margin:0">🇱🇺 Luxemburg</h2>
-        </a>
-
-        <a href="ma.html" class="card maltese-card">
-            <h2 style="margin:0">🇲🇹 Málta</h2>
-        </a>
-
-        <a href="mo.html" class="card monaco-card">
-            <h2 style="margin:0">🇲🇨 Monaco</h2>
-        </a>
-
-        <a href="nl.html" class="card dutch-card">
-            <h2 style="margin:0">🇳🇱 Hollandia</h2>
-        </a>
-
-        <a href="pt.html" class="card portuguese-card">
-            <h2 style="margin:0">🇵🇹 Portugália</h2>
-        </a>
-
-        <a href="sm.html" class="card sanmarino-card">
-            <h2 style="margin:0">🇸🇲 San Marino</h2>
-        </a>
-
-        <a href="sn.html" class="card slovenian-card">
-            <h2 style="margin:0">🇸🇮 Szlovénia</h2>
-        </a>
-
-        <a href="es.html" class="card spanish-card">
-            <h2 style="margin:0">🇪🇸 Spanyolország</h2>
-        </a>
-
-        <a href="vk.html" class="card vatican-card">
-            <h2 style="margin:0">🇻🇦 Vatikán</h2>
-        </a>
-	<a href="bu.html" class="card bulgarian-card">
-            <h2 style="margin:0">bulgária</h2>
-        </a>
-
+        <a href="at.html" class="card austrian-card"><h2>🇦🇹 Ausztria</h2></a>
+        <a href="be.html" class="card belgian-card"><h2>🇧🇪 Belgium</h2></a>
+        <a href="it.html" class="card italian-card"><h2>🇮🇹 Olaszország</h2></a>
+        <a href="fr.html" class="card french-card"><h2>🇫🇷 Franciaország</h2></a>
+        <a href="cr.html" class="card croatian-card"><h2>🇭🇷 Horvátország</h2></a>
+        <a href="sk.html" class="card slovak-card"><h2>🇸🇰 Szlovákia</h2></a>
+        <a href="an.html" class="card andorran-card"><h2>🇦🇩 Andorra</h2></a>
+        <a href="cy.html" class="card cypriot-card"><h2>🇨🇾 Ciprus</h2></a>
+        <a href="ee.html" class="card estonian-card"><h2>🇪🇪 Észtország</h2></a>
+        <a href="fi.html" class="card finnish-card"><h2>🇫🇮 Finnország</h2></a>
+        <a href="gr.html" class="card greek-card"><h2>🇬🇷 Görögország</h2></a>
+        <a href="ie.html" class="card irish-card"><h2>🇮🇪 Írország</h2></a>
+        <a href="lt.html" class="card latvian-card"><h2>🇱🇻 Lettország</h2></a>
+        <a href="ly.html" class="card lithuanian-card"><h2>🇱🇹 Litvánia</h2></a>
+        <a href="lu.html" class="card luxembourg-card"><h2>🇱🇺 Luxemburg</h2></a>
+        <a href="ma.html" class="card maltese-card"><h2>🇲🇹 Málta</h2></a>
+        <a href="mo.html" class="card monaco-card"><h2>🇲🇨 Monaco</h2></a>
+        <a href="nl.html" class="card dutch-card"><h2>🇳🇱 Hollandia</h2></a>
+        <a href="pt.html" class="card portuguese-card"><h2>🇵🇹 Portugália</h2></a>
+        <a href="sm.html" class="card sanmarino-card"><h2>🇸🇲 San Marino</h2></a>
+        <a href="sn.html" class="card slovenian-card"><h2>🇸🇮 Szlovénia</h2></a>
+        <a href="es.html" class="card spanish-card"><h2>🇪🇸 Spanyolország</h2></a>
+        <a href="vk.html" class="card vatican-card"><h2>🇻🇦 Vatikán</h2></a>
+        <a href="bu.html" class="card bulgarian-card"><h2>🇧🇬 Bulgária</h2></a>
     </div>
 
     <div class="backup-section">
-        <h3 style="margin-top:0">⚙️ Adatmentés & Biztonság</h3>
-        <div class="btn-group">
-            <button onclick="exportData()">💾 Mentés (.json)</button>
-            <button onclick="document.getElementById('importFile').click()">📂 Visszaállítás</button>
-        </div>
+        <h3>⚙️ Adatkezelés</h3>
+        <button onclick="exportData()">💾 Mentés (.json)</button>
+        <button onclick="document.getElementById('importFile').click()">📂 Visszaállítás</button>
         <input type="file" id="importFile" style="display:none" onchange="importData(event)">
     </div>
 </div>
 
 <script>
-    // A statisztikai számításokat eltávolítottuk, mivel az aloldalak kezelik őket.
-    
+    function toggleMenu(id) {
+        document.getElementById(id).classList.toggle('active');
+    }
+
+    window.onload = function() {
+        // ID kezelés
+        let myUserID = localStorage.getItem('myCoinUserID');
+        if (!myUserID) {
+            myUserID = 'COIN-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            localStorage.setItem('myCoinUserID', myUserID);
+        }
+        document.getElementById('user-id-text').innerText = myUserID;
+
+        // QR kód generálás
+        new QRCode(document.getElementById("qrcode"), {
+            text: myUserID,
+            width: 150,
+            height: 150
+        });
+    };
+
     function exportData() {
         const data = {};
         for(let i=0; i<localStorage.length; i++) {
@@ -373,7 +257,7 @@
         const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'erme_gyujtemeny_mentes.json';
+        a.download = 'erme_gyujtemeny.json';
         a.click();
     }
 
@@ -387,12 +271,15 @@
                 Object.keys(importedData).forEach(key => localStorage.setItem(key, importedData[key]));
                 alert('Sikeres visszaállítás!');
                 window.location.reload();
-            } catch(err) {
-                alert('Hiba a fájl beolvasásakor!');
-            }
+            } catch(err) { alert('Hiba!'); }
         };
         reader.readAsText(file);
     }
+
+    function viewFriend(id) {
+        alert("Barát gyűjteményének megtekintése: " + id);
+    }
 </script>
+
 </body>
 </html>
